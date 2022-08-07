@@ -1,0 +1,23 @@
+
+CREATE TABLE nilai_mahasiswa (
+nim CHAR(8) PRIMARY KEY,
+nama VARCHAR(50),
+semester_1 DECIMAL(4,2),
+semester_2 DECIMAL(4,2),
+semester_3 DECIMAL(4,2) );
+
+CREATE TABLE ipk_mahasiswa (
+    nama_dan_nim VARCHAR(58),
+    nilai_ipk DECIMAL(4,2) );
+
+DELIMITER //
+CREATE TRIGGER insert_mahasiswa
+BEFORE INSERT ON nilai_mahasiswa FOR EACH ROW
+BEGIN
+    DECLARE nama_nim TEXT;
+    DECLARE nilai DECIMAL(4,2);
+    SET nama_nim = CONCAT(UPPER(NEW.nama), ' (' ,NEW.nim , ')') ;
+    SET nilai =  ROUND((NEW.semester_1 + NEW.semester_2 + NEW.semester_3)/3 , 2 );
+    INSERT INTO ipk_mahasiswa VALUES (nama_nim, nilai);
+END//
+DELIMITER ;
